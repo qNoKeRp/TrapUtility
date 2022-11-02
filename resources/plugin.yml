@@ -1,0 +1,7 @@
+name: Trapka
+version: '${project.version}'
+main: qnokerp.trapka.Trapka
+api-version: 1.16
+authors: [ qnokerp ]
+commands:
+  get: {}
