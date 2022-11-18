@@ -1,4 +1,4 @@
-package qnokerp.trapka;
+package qnokerp.trapka.items;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;

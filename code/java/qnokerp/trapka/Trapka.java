@@ -2,16 +2,25 @@ package qnokerp.trapka;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
+import qnokerp.trapka.utils.CM;
+import qnokerp.trapka.place.EventListener;
+import qnokerp.trapka.utils.Cuboid;
+import qnokerp.trapka.utils.Itm;
 
-import static qnokerp.trapka.SetBlocks.blocks;
-import static qnokerp.trapka.NewItems.PlastItemStack;
-import static qnokerp.trapka.NewItems.TrapkaItemStack;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import static qnokerp.trapka.items.NewItems.PlastItemStack;
+import static qnokerp.trapka.items.NewItems.TrapkaItemStack;
+import static qnokerp.trapka.place.SetBlocks.*;
 
 
 public final class Trapka extends JavaPlugin {
@@ -19,7 +28,12 @@ public final class Trapka extends JavaPlugin {
     private static Trapka instance;
     @Override
     public void onEnable() {
+        HashMap<Location, Material> blocks = new HashMap<Location, Material>();
+        List<Cuboid> cuboids = new ArrayList<>();
+        HashMap<String, Itm> items = new HashMap<String, qnokerp.trapka.utils.Itm>();
+
         instance = this;
+        CM.setupCooldown();
 
         Bukkit.getPluginManager().registerEvents(new EventListener(), this);
 
@@ -35,13 +49,11 @@ public final class Trapka extends JavaPlugin {
                 if (args[0].equalsIgnoreCase("plast")) {
                     Player player = (Player) sender;
                     player.getInventory().addItem(PlastItemStack());
-
                 }
 
                 return true;
             }
         });
-
     }
     public static Trapka getInstance() { return instance; }
 
@@ -49,13 +61,12 @@ public final class Trapka extends JavaPlugin {
     public void onDisable() {      //Удаление всех пластов и трапок при рестарте
         for (Location location : blocks.keySet()) {
 
-            int x = (int) location.getX();
-            int y = (int) location.getY();
-            int z = (int) location.getZ();
+            Material material = blocks.get(location);
 
-            String material = toString().valueOf(blocks.get(location)).toLowerCase();
+            if(material != null) {
+                location.getBlock().setType(material);
+            }
 
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "fill " + x + " " + y + " " + z + " " + x + " " + y + " " + z + " " + "minecraft:" + material);
         }
     }
 }
